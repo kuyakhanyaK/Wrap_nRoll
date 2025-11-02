@@ -1,0 +1,58 @@
+﻿@model List<Wrap_nRoll.Models.CartItem>
+
+<div class="container my-4">
+    <h2>Your Cart</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Your cart is empty.</div>
+        <a asp-controller="Store" asp-action="Index" class="btn btn-primary">Browse Wraps</a>
+    }
+    else
+    {
+        <form asp-controller="Cart" asp-action="UpdateCart" method="post">
+            @Html.AntiForgeryToken()
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Wrap</th>
+                        <th>Customizations</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var item = Model[i];
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                @foreach (var ing in item.Ingredients)
+                                {
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               name="updatedCart[@i].Ingredients"
+                                               value="@ing"
+                                               class="form-check-input"
+                                               @(item.Customizations != null && item.Customizations.Split(", ").Contains(ing) ? "checked" : "") />
+                                        <label class="form-check-label">@ing</label>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <input type="number" name="updatedCart[@i].Quantity" value="@item.Quantity" min="1" max="20" class="form-control" style="width:70px;" />
+                            </td>
+                            <td>R @item.Price</td>
+                            <td>R @(item.Price* item.Quantity)</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success">Update Cart</button>
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary">Proceed to Checkout</a>
+        </form>
+    }
+</div>

@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Wrap_nRoll.Models.Order>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+    var statuses = ViewBag.Statuses as string[];
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold">📦 Manage Customer Orders</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Success"]</div>
+    }
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">All Active Orders</h5>
+                <input type="text" id="orderSearch" class="form-control w-25" placeholder="Search by name or status...">
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTable">
+                        @foreach (var order in Model)
+                        {
+                            var statusColor = order.Status switch
+                            {
+                                "Pending" => "bg-warning text-dark",
+                                "Preparing" => "bg-info text-dark",
+                                "Ready" => "bg-primary text-light",
+                                "Completed" => "bg-success text-light",
+                                "Cancelled" => "bg-danger text-light",
+                                _ => "bg-secondary text-light"
+                            };
+
+                            <tr>
+                                <td class="fw-bold text-center">#@order.OrderId</td>
+                                <td>@order.Customer.Name</td>
+                                <td>@order.OrderDate.ToString("g")</td>
+                                <td>
+                                    <form asp-action="UpdateStatus" method="post" class="m-0">
+                                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                                        <select name="status" class="form-select form-select-sm text-center @statusColor"
+                                                onchange="this.form.submit()">
+                                            @foreach (var s in statuses)
+                                            {
+                                                <option value="@s" selected="@(s == order.Status)">
+                                                    @s
+                                                </option>
+                                            }
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <li>@item.Wrap.Name × @item.Quantity</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td class="fw-bold text-warning text-center">R @order.TotalAmount.ToString("F2")</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-outline-dark btn-sm">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 🔍 Search by customer name or status
+        document.getElementById("orderSearch").addEventListener("keyup", function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#orderTable tr");
+
+            rows.forEach(row => {
+                const name = row.cells[1]?.innerText.toLowerCase();
+                const status = row.cells[3]?.innerText.toLowerCase();
+                if (name.includes(filter) || status.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    </script>
+}

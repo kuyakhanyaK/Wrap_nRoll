@@ -1,0 +1,46 @@
+﻿@model Wrap_nRoll.Models.ViewModel.LoginVM
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <!-- Login Card -->
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4 text-center">Login</h3>
+
+                    <form asp-action="Login" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" type="password" />
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label asp-for="RememberMe" class="form-check-label"></label>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 text-dark">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logo / Image Card -->
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card-body d-flex justify-content-center align-items-center" style="height:100%;">
+                <img src="~/images/Logo2.png" alt="Wrap 'n Roll Logo" class="img-fluid" style="max-height:250px;">
+            </div>
+        </div>
+    </div>
+</div>

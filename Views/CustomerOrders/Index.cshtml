@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Wrap_nRoll.Models.Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase text-warning">My Orders</h2>
+        <p class="text-light">Track your wraps and see your order status.</p>
+        <hr class="w-25 mx-auto border-3 border-warning" />
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <table class="table table-dark table-hover align-middle text-light rounded-4">
+                <thead class="text-warning">
+                    <tr>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total Items</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.OrderId</td>
+                            <td>@order.OrderDate.ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@order.Status</td>
+                            <td>@order.OrderItems.Count()</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-warning btn-sm text-white">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <p class="text-light text-center mt-3">You have no orders yet. Start customizing your wrap now!</p>
+            }
+        </div>
+    </div>
+</div>

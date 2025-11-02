@@ -1,0 +1,148 @@
+﻿@model Wrap_nRoll.Models.Order
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="card shadow-sm bg-dark text-light">
+                <div class="card-body">
+                    <h3 class="card-title mb-4 text-center">Order Details - #@Model.OrderId</h3>
+
+                    <div class="mb-4">
+                        <p><strong>Order Date:</strong> @Model.OrderDate.ToString("g")</p>
+                        <p><strong>Total:</strong> R @Model.TotalAmount</p>
+                    </div>
+
+                    <!-- 🧭 STATUS TRACKER -->
+                    <div class="order-tracker mb-5">
+                        <div class="steps d-flex flex-nowrap overflow-auto justify-content-between">
+                            @{
+                                var statuses = new[] { "Pending", "Preparing", "Ready", "On the way", "Completed", "Cancelled" };
+                                int currentStep = Array.IndexOf(statuses, Model.Status);
+                            }
+
+                            @for (int i = 0; i < statuses.Length; i++)
+                            {
+                                var status = statuses[i];
+                                string circleColor = i < currentStep ? "completed" :
+                                i == currentStep ? "current" : "upcoming";
+
+                                if (status == "Cancelled" && status != Model.Status)
+                                    continue;
+
+                                <div class="step d-flex align-items-center">
+                                    <div class="circle @circleColor"></div>
+                                    <div class="label ms-2">@status</div>
+                                    @if (i < statuses.Length - 1 && !(status == "Cancelled" && status != Model.Status))
+                                    {
+                                        <div class="line flex-grow-1 mx-2"></div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 🧾 ITEMS TABLE -->
+                    <h4>Items:</h4>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Wrap</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@item.Wrap.Name</strong><br />
+                                            @if (!string.IsNullOrEmpty(item.Customizations))
+                                            {
+                                                <small class="text-warning">Fillings: @item.Customizations</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">Default fillings</small>
+                                            }
+                                        </td>
+                                        <td>@item.Quantity</td>
+                                        <td>R @item.UnitPrice.ToString("F2")</td>
+                                        <td>R @(item.Quantity* item.UnitPrice)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <a asp-action="Index" class="btn btn-light w-100 mt-3">Back to My Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .order-tracker {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .steps {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        position: relative;
+        min-width: 120px;
+    }
+
+    .circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+    }
+
+        .circle.completed {
+            background-color: orange;
+            border-color: orange;
+        }
+
+        .circle.current {
+            background-color: green;
+            border-color: green;
+        }
+
+        .circle.upcoming {
+            background-color: #ccc;
+            border-color: #ccc;
+        }
+
+    .label {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .line {
+        height: 3px;
+        background-color: #ccc;
+        border-radius: 2px;
+    }
+
+    .circle.completed + .label + .line {
+        background-color: orange;
+    }
+
+    .circle.current + .label + .line {
+        background-color: green;
+    }
+</style>

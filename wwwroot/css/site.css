@@ -1,0 +1,143 @@
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+/* ===== Buttons and Focus States ===== */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ===== Body Styling ===== */
+body {
+    margin-bottom: 60px;
+    color: #fff;
+    background-image: url("https://images.unsplash.com/photo-1690983321303-f510e0575644?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGFyayUyMHdvb2QlMjBncmFpbiUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600"); background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 0;
+}
+
+    /* ===== Dark overlay for readability ===== */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+        z-index: -1;
+    }
+
+/* ===== Floating Input Placeholder Fix ===== */
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+/* ===== Full-width containers (no spacing) ===== */
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    border-bottom: 3px solid #facc15; /* gold accent */
+}
+
+    .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .hero-section p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+/* ===== Card Styling ===== */
+.card {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* ===== Navbar & Footer ===== */
+.navbar, footer {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(3px);
+}
+
+footer {
+    border-top: 2px solid rgba(250, 204, 21, 0.6);
+    color: #eee;
+}
+
+/* ===== Buttons ===== */
+.btn-warning {
+    background-color: #facc15;
+    color: #222;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-warning:hover {
+        background-color: #ffde59;
+        color: #000;
+    }
+
+/* ===== Table (Orders Page) ===== */
+.table-dark th {
+    background-color: #3b3b3b !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

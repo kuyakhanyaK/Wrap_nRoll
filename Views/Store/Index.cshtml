@@ -1,0 +1,108 @@
+﻿@* @model IEnumerable<Wrap_nRoll.Models.Wrap>
+
+<h2>Our Wraps</h2>
+
+<div class="row">
+    @foreach (var wrap in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="@wrap.ImageUrl" class="card-img-top" alt="@wrap.Name" />
+                <div class="card-body">
+                    <h5 class="card-title">@wrap.Name</h5>
+                    <p class="card-text">@wrap.Description</p>
+                    <p class="card-text"><strong>@wrap.Price.ToString("C")</strong></p>
+                    <button class="btn btn-success add-to-cart" data-id="@wrap.WrapId">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('.add-to-cart').click(function() {
+            var wrapId = $(this).data('id');
+            $.post('/Cart/AddToCart', { wrapId: wrapId }, function(response) {
+                alert('Wrap added to cart!');
+            });
+        });
+    </script>
+}
+ *@
+@model IEnumerable<Wrap_nRoll.Models.Wrap>
+
+@{
+    ViewData["Title"] = "Wraps Menu";
+}
+
+<section class="hero-section text-center text-light py-5 bg-dark">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Welcome to Wrap ’n Roll</h1>
+        <p class="lead">Fresh wraps, full of flavor, made with love.</p>
+        <a href="#wraps-section" class="btn btn-warning btn-lg mt-3 text-dark">See Our Wraps</a>
+    </div>
+</section>
+
+<!-- Wraps Section -->
+<div id="wraps-section" class="container my-5">
+    <div class="row g-4">
+        @foreach (var wrap in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="@wrap.ImageUrl" class="card-img-top" alt="@wrap.Name" style="height:250px; object-fit:cover;">
+                    <div class="card-body d-flex flex-column bg-dark text-light">
+                        <h5 class="card-title fw-bold">@wrap.Name</h5>
+                        <p class="card-text">@wrap.Description</p>
+                        <p class="card-text fw-bold text-warning">R @wrap.Price</p>
+                        <button class="btn btn-warning mt-auto text-dark" onclick="addToCart(@wrap.WrapId)">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @* ensure antiforgery token exists on the page *@
+    @Html.AntiForgeryToken()
+
+    <script>
+        function addToCart(wrapId) {
+            // read antiforgery token from the hidden input
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: {
+                    wrapId: wrapId,
+                    quantity: 1,
+                    __RequestVerificationToken: token
+                    // if you need selectedIngredients you can add them here
+                },
+                success: function (data) {
+                    // expect JSON returning { cartCount: <int> }
+                    if (data && data.cartCount !== undefined) {
+                        $('#cart-count').fadeOut(150, function () {
+                            $(this).text(data.cartCount + ' item' + (data.cartCount === 1 ? '' : 's')).fadeIn(150);
+                        });
+                    } else {
+                        // fallback UI message
+                        alert('Wrap added to cart!');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AddToCart failed:', status, error, xhr.responseText);
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    </script>
+}

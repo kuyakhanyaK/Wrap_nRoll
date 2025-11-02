@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Wrap_nRoll.Models.User>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-light">Employees</h2>
+    <a href="/Admin/AddEmployee" class="btn btn-warning text-dark mb-3">+ Add Employee</a>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in Model)
+                {
+                    <tr>
+                        <td>@employee.Name</td>
+                        <td>@employee.Email</td>
+                        <td>@employee.PhoneNumber</td>
+                        <td>@employee.Address</td>
+                        <td>
+                            <a asp-action="EditEmployee" asp-route-id="@employee.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="DeleteEmployee" asp-route-id="@employee.Id" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this employee?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

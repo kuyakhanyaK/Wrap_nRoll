@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Wrap_nRoll.Models.Wrap>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-dark">Wraps</h2>
+    <a href="/Wrap/AddWrap" class="btn btn-warning text-dark mb-3">+ Add Wrap</a>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price (R)</th>
+                    <th>Available?</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var wrap in Model)
+                {
+                    <tr>
+                        <td>@wrap.Name</td>
+                        <td>@wrap.Description</td>
+                        <td>@wrap.Price</td>
+                        <td>@(wrap.IsAvailable ? "Yes" : "No")</td>
+                        <td>
+                            <a asp-action="EditWrap" asp-route-id="@wrap.WrapId" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="DeleteWrap" asp-route-id="@wrap.WrapId" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this wrap?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.availability-toggle').change(function () {
+                var wrapId = $(this).data('id');
+                $.ajax({
+                    url: '/Wrap/ToggleAvailability',
+                    type: 'POST',
+                    data: { id: wrapId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Availability updated: ' + (response.isAvailable ? 'Available' : 'Not Available'));
+                        } else {
+                            alert('Failed to update availability.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating availability.');
+                    }
+                });
+            });
+        });
+    </script>
+}

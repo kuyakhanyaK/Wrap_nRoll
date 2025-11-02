@@ -1,0 +1,392 @@
+﻿@* @model Wrap_nRoll.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero-section text-center text-light py-5 bg-dark">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Welcome to Wrap ’n Roll</h1>
+        <p class="lead">Fresh wraps, full of flavor, made with love.</p>
+        <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+            <a href="#wraps-section" class="btn btn-warning btn-lg text-dark shadow-sm">See Our Wraps</a>
+            <a href="#contact-section" class="btn btn-outline-light btn-lg shadow-sm">Contact Us</a>
+            <a href="#about-section" class="btn btn-outline-light btn-lg shadow-sm">About Us</a>
+        </div>
+    </div>
+</section>
+
+<!-- Wraps Section -->
+<section id="wraps-section" class="container my-5">
+    <h2 class="fw-bold text-warning mb-4 text-center">Our Wraps</h2>
+    <div class="row g-4">
+        @if (Model.Wraps != null && Model.Wraps.Any())
+        {
+            foreach (var wrap in Model.Wraps)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <img src="@wrap.ImageUrl" class="card-img-top" alt="@wrap.Name" style="height:250px; object-fit:cover;">
+                        <div class="card-body d-flex flex-column bg-dark text-light">
+                            <h5 class="card-title fw-bold">@wrap.Name</h5>
+                            <p class="card-text">@wrap.Description</p>
+                            <p class="card-text fw-bold text-warning">R @wrap.Price</p>
+                            <button class="btn btn-warning mt-auto text-dark" onclick="addToCart(@wrap.WrapId)">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center text-light">
+                <p>No wraps available right now. Check back later!</p>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact-section" class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase">Contact Us</h2>
+        <p class="text-muted">Got a question or feedback? We'd love to hear from you!</p>
+        <hr class="w-25 mx-auto border-3 border-warning" />
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center mx-auto" style="max-width: 700px;">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show text-center mx-auto" style="max-width: 700px;">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-4 text-center fw-semibold">Send us a message</h4>
+
+                    <form asp-action="Index" method="post">
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Name" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Name" class="form-control rounded-3" placeholder="Your full name" />
+                            <span asp-validation-for="ContactForm.Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Email" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Email" class="form-control rounded-3" placeholder="you@example.com" />
+                            <span asp-validation-for="ContactForm.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Subject" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Subject" class="form-control rounded-3" placeholder="Subject" />
+                            <span asp-validation-for="ContactForm.Subject" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Message" class="form-label fw-semibold"></label>
+                            <textarea asp-for="ContactForm.Message" class="form-control rounded-3" rows="5" placeholder="Type your message here..."></textarea>
+                            <span asp-validation-for="ContactForm.Message" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning text-white fw-semibold py-2 rounded-3 shadow-sm">
+                                <i class="bi bi-send-fill me-1"></i> Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about-section" class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase text-warning">About Wrap ’n Roll</h2>
+        <p class="text-light">Where hustle meets flavour — and every bite tells a story.</p>
+        <hr class="w-25 mx-auto border-3 border-warning" />
+    </div>
+
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <img src="~/images/Screenshot_20220903-115625_Instagram.jpg" alt="Wrap 'n Roll" class="img-fluid rounded-4 shadow-lg" />
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3">
+                <h4 class="fw-semibold mb-3 text-warning">Our Story</h4>
+                <p class="text-light">
+                    In my final year of studies, I faced a setback — I failed one module and suddenly found myself without enough funds for even the basics. One day, with just R200 that my family sent me to buy something to eat, I made a decision that would change everything.
+
+                    Instead of spending it all on one meal, I bought a few simple ingredients and made my first wraps to sell. That’s how Wrap ’n Roll was born — from a tough moment, a small idea, and a big dream.
+
+                    What started as a way to get by soon turned into something more. With every wrap I made, I improved the recipe, added more flavour, and built something that people genuinely loved. Today, Wrap ’n Roll continues to grow — proof that even the smallest start can lead to something deliciously big.
+                </p>
+
+                <h4 class="fw-semibold mt-4 mb-3 text-warning">What We Stand For</h4>
+                <ul class="list-unstyled text-light">
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Fresh, quality ingredients — always made to order.</li>
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Supporting students and local communities.</li>
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Healthy choices without compromising taste.</li>
+                </ul>
+
+                <h4 class="fw-semibold mt-4 mb-3 text-warning">Join the Movement</h4>
+                <p class="text-light">
+                    Whether you’re grabbing a quick bite or sharing a meal with friends, we’re here to make your day brighter — one wrap at a time.
+                </p>
+
+                <a href="#contact-section" class="btn btn-warning text-white fw-semibold px-4 mt-3 rounded-3 shadow-sm">
+                    <i class="bi bi-envelope-fill me-1"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 pt-4 border-top border-light">
+        <p class="text-light small">
+            &copy; @DateTime.Now.Year Wrap ’n Roll — Made with ❤️ in Gqeberha.
+        </p>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Html.AntiForgeryToken()
+    <script>
+        function addToCart(wrapId) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: {
+                    wrapId: wrapId,
+                    quantity: 1,
+                    __RequestVerificationToken: token
+                },
+                success: function (data) {
+                    if (data && data.cartCount !== undefined) {
+                        $('#cart-count').fadeOut(150, function () {
+                            $(this).text(data.cartCount + ' item' + (data.cartCount === 1 ? '' : 's')).fadeIn(150);
+                        });
+                    } else {
+                        alert('Wrap added to cart!');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AddToCart failed:', status, error, xhr.responseText);
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    </script>
+}
+ *@
+@model Wrap_nRoll.Models.HomeViewModel
+@using Newtonsoft.Json
+@using Wrap_nRoll.Models
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Home";
+
+    // Safe cart count
+    int cartCount = 0;
+    var cartJson = HttpContextAccessor.HttpContext.Session.GetString("Cart");
+    if (!string.IsNullOrEmpty(cartJson))
+    {
+        var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartJson);
+        cartCount = cartItems?.Sum(c => c.Quantity) ?? 0;
+    }
+}
+
+<!-- ===== Hero Section ===== -->
+<section class="hero-section text-center text-light py-5 bg-dark">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Welcome to Wrap ’n Roll</h1>
+        <p class="lead">Fresh wraps, full of flavor, made with love.</p>
+        <a href="#wraps-section" class="btn btn-warning btn-lg mt-3 text-dark">See Our Wraps</a>
+    </div>
+</section>
+
+<!-- ===== Wraps Section ===== -->
+<div id="wraps-section" class="container my-5">
+    <div class="row g-4">
+        @foreach (var wrap in Model.Wraps)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="@wrap.ImageUrl" class="card-img-top" alt="@wrap.Name" style="height:250px; object-fit:cover;">
+                    <div class="card-body d-flex flex-column bg-dark text-light">
+                        <h5 class="card-title fw-bold">@wrap.Name</h5>
+                        <p class="card-text">@wrap.Description</p>
+                        <p class="card-text fw-bold text-warning">R @wrap.Price</p>
+                        <button class="btn btn-warning mt-auto text-dark" onclick="addToCart(@wrap.WrapId)">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ===== Contact Section ===== -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase">Contact Us</h2>
+        <p class="text-muted">Got a question or feedback? We'd love to hear from you!</p>
+        <hr class="w-25 mx-auto border-3 border-warning" />
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center mx-auto" style="max-width: 700px;">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    else if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show text-center mx-auto" style="max-width: 700px;">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-4 text-center fw-semibold">Send us a message</h4>
+
+                    <form asp-action="Index" method="post">
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Name" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Name" class="form-control rounded-3" placeholder="Your full name" />
+                            <span asp-validation-for="ContactForm.Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Email" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Email" class="form-control rounded-3" placeholder="you@example.com" />
+                            <span asp-validation-for="ContactForm.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Subject" class="form-label fw-semibold"></label>
+                            <input asp-for="ContactForm.Subject" class="form-control rounded-3" placeholder="Subject" />
+                            <span asp-validation-for="ContactForm.Subject" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactForm.Message" class="form-label fw-semibold"></label>
+                            <textarea asp-for="ContactForm.Message" class="form-control rounded-3" rows="5" placeholder="Type your message here..."></textarea>
+                            <span asp-validation-for="ContactForm.Message" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning text-white fw-semibold py-2 rounded-3 shadow-sm">
+                                <i class="bi bi-send-fill me-1"></i> Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== About Section ===== -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase text-warning">About Wrap ’n Roll</h2>
+        <p class="text-light">Where hustle meets flavour — and every bite tells a story.</p>
+        <hr class="w-25 mx-auto border-3 border-warning" />
+    </div>
+
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <img src="~/images/Screenshot_20220903-115625_Instagram.jpg" alt="Wrap 'n Roll" class="img-fluid rounded-4 shadow-lg" />
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-3">
+                <h4 class="fw-semibold mb-3 text-warning">Our Story</h4>
+                <p class="text-light">
+                    Wrap ’n Roll began with a simple idea: make fresh, delicious wraps people love. From humble beginnings, we’ve refined our recipes and perfected our flavours, growing into a business committed to quality and taste. Every wrap we make is crafted to deliver a great experience — fast, fresh, and full of flavour.
+                </p>
+
+
+                <h4 class="fw-semibold mt-4 mb-3 text-warning">What We Stand For</h4>
+                <ul class="list-unstyled text-light">
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Fresh, quality ingredients — always made to order.</li>
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Supporting students and local communities.</li>
+                    <li><i class="bi bi-check-circle-fill text-warning me-2"></i> Healthy choices without compromising taste.</li>
+                </ul>
+
+                <a href="/Contact" class="btn btn-warning text-white fw-semibold px-4 mt-3 rounded-3 shadow-sm">
+                    <i class="bi bi-envelope-fill me-1"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 pt-4 border-top border-light">
+        <p class="text-light small">
+            &copy; @DateTime.Now.Year Wrap ’n Roll — Made with ❤️ in Gqeberha.
+        </p>
+    </div>
+</div>
+
+<!-- ===== Scripts ===== -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Html.AntiForgeryToken()
+
+    <script>
+        function addToCart(wrapId) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: {
+                    wrapId: wrapId,
+                    quantity: 1,
+                    __RequestVerificationToken: token
+                },
+                success: function (data) {
+                    if (data && data.cartCount !== undefined) {
+                        $('#cart-count').fadeOut(150, function () {
+                            $(this).text(data.cartCount + ' item' + (data.cartCount === 1 ? '' : 's')).fadeIn(150);
+                        });
+                    } else {
+                        alert('Wrap added to cart!');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AddToCart failed:', status, error, xhr.responseText);
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    </script>
+}

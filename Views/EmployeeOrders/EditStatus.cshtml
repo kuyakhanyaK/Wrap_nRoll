@@ -1,0 +1,50 @@
+﻿@model Wrap_nRoll.Models.Order
+
+
+
+<form asp-action="EditStatus" method="post">
+    <input type="hidden" asp-for="OrderId" />
+
+    <select name="status" class="form-select">
+        <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+        <option value="Preparing" selected="@(Model.Status == "Preparing")">Preparing</option>
+        <option value="Ready" selected="@(Model.Status == "Ready")">Ready</option>
+        <option value="Completed" selected="@(Model.Status == "Completed")">Completed</option>
+        <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+    </select>
+    
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Edit Order Status</h3>
+                    <p class="text-center text-muted mb-4">Order #@Model.OrderId</p>
+
+                    <form asp-action="EditStatus" method="post">
+                        <input type="hidden" asp-for="OrderId" />
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Select Status</label>
+                                <select asp-for="Status" class="form-select" asp-items="@(new SelectList(
+                                                                                 new[] { "Pending", "Preparing", "Ready", "Completed", "Cancelled" }, Model.Status))">
+                                </select>
+
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success w-50">Update Status</button>
+                            <a asp-action="Index" class="btn btn-secondary w-50">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <button type="submit" class="btn btn-success">Update Status</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,75 @@
+﻿@model List<Wrap_nRoll.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container my-4">
+    <h2 class="mb-4">Checkout</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            Your cart is empty. <a asp-controller="Store" asp-action="Index" class="alert-link">Go shopping!</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Wrap</th>
+                        <th>Image</th>
+                        <th>Fillings / Customizations</th> <!-- 👈 NEW COLUMN -->
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                <img src="@item.ImageUrl" alt="@item.Name"
+                                     class="rounded"
+                                     style="width:80px; height:80px; object-fit:cover;" />
+                            </td>
+
+                            <!-- 👇 NEW Customizations display -->
+                            <td>
+                                @if (item.Ingredients != null && item.Ingredients.Any())
+                                {
+                                    <ul class="mb-0">
+                                        @foreach (var ingredient in item.Ingredients)
+                                        {
+                                            <li>@ingredient</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <em>Default fillings</em>
+                                }
+                            </td>
+
+                            <td>R @item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>R @(item.Price* item.Quantity)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4 class="mb-0">Total: R @Model.Sum(i => i.Price * i.Quantity)</h4>
+            <form asp-action="PlaceOrder" method="post" class="mb-0">
+                @Html.AntiForgeryToken() <!-- 👈 Important for security -->
+                <button type="submit" class="btn btn-success btn-lg">Place Order</button>
+            </form>
+        </div>
+    }
+</div>
